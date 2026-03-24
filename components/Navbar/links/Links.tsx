@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import styles from "./links.module.css";
 import Image from "next/image";
 import NavLink from "@/components/Navbar/links/navlink/navlink";
@@ -26,12 +26,27 @@ const links = [
 
 const Links = () => {
     const [open, setOpen] = useState(false);
+
+    // TEMPORARY
+    const session: boolean = true;
+    const isAdmin: boolean = true;
+
     return (
         <div className={styles.container}>
             <div className={styles.links}>
                 {links.map((link) => (
-                    <NavLink item={link} key={link.title} />
+                    <NavLink item={link} key={link.title}/>
                 ))}
+                {session ? (
+                    <>
+                        {isAdmin && <NavLink item={{title: "Admin", path: "/admin"}}/>}
+                        <form>
+                            <button className={styles.logout}>Logout</button>
+                        </form>
+                    </>
+                ) : (
+                    <NavLink item={{title: "Login", path: "/login"}}/>
+                )}
             </div>
             <Image
                 className={styles.menuButton}
@@ -44,7 +59,7 @@ const Links = () => {
             {open && (
                 <div className={styles.mobileLinks}>
                     {links.map((link) => (
-                        <NavLink item={link} key={link.title} />
+                        <NavLink item={link} key={link.title}/>
                     ))}
                 </div>
             )}
