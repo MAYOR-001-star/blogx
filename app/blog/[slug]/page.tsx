@@ -1,8 +1,8 @@
 import Image from "next/image";
 import styles from "./singlePost.module.css";
 import PostUser from "@/components/postUser/postUser";
-import {Suspense} from "react";
-import {getPost} from "@/app/lib/data";
+import { Suspense } from "react";
+import { getPost } from "@/app/lib/data";
 
 // const getData = async (slug: string) => {
 //     const res = await fetch(`http://localhost:3000/api/blog/${slug}`);
@@ -14,10 +14,10 @@ import {getPost} from "@/app/lib/data";
 //     return res.json();
 // };
 
-export const generateMetadata = async ({params,}: {
+export const generateMetadata = async ({ params, }: {
     params: Promise<{ slug: string }>;
 }) => {
-    const {slug} = await params;
+    const { slug } = await params;
     const post = await getPost(slug);
 
     if (!post) {
@@ -33,18 +33,18 @@ export const generateMetadata = async ({params,}: {
 };
 
 const SinglePostPage = async ({
-                                  params,
-                              }: {
+    params,
+}: {
     params: Promise<{ slug: string }>;
 }) => {
-    const {slug} = await params;
+    const { slug } = await params;
     const post = await getPost(slug);
 
     return (
         <div className={styles.container}>
             {post?.img && (
                 <div className={styles.imgContainer}>
-                    <Image src={post.img} alt="" fill className={styles.img}/>
+                    <Image src={post.img} alt="" fill className={styles.img} />
                 </div>
             )}
 
@@ -54,15 +54,15 @@ const SinglePostPage = async ({
                 <div className={styles.detail}>
                     {post && (
                         <Suspense fallback={<div>Loading...</div>}>
-                            <PostUser userId={post.userId}/>
+                            <PostUser userId={post.userId} />
                         </Suspense>
                     )}
 
                     <div className={styles.detailText}>
                         <span className={styles.detailTitle}>Published</span>
                         <span className={styles.detailValue}>
-              {new Date(post?.createdAt).toDateString()}
-            </span>
+                            {new Date(post?.createdAt).toDateString()}
+                        </span>
                     </div>
                 </div>
 

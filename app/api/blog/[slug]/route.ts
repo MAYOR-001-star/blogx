@@ -3,13 +3,13 @@ import {Post} from "@/app/lib/models";
 import {NextResponse} from "next/server";
 
 type paramsProps = {
-    params: {
+    params: Promise<{
         slug: string
-    }
+    }>
 }
 
 export const GET = async (request: Request, {params}: paramsProps) => {
-    const {slug} = params
+    const {slug} = await params
     try {
         await connectToDb()
         const post = await Post.findOne({slug})
@@ -21,8 +21,7 @@ export const GET = async (request: Request, {params}: paramsProps) => {
 }
 
 export const DELETE = async (request: Request, {params}: paramsProps) => {
-
-    const {slug} = params
+    const {slug} = await params
     try {
         await connectToDb()
         await Post.deleteOne({slug})
