@@ -13,8 +13,8 @@ const blogPage = async () => {
     return (
         <div className={styles.container}>
             {posts.map((post) => (
-                <div className={styles.post}>
-                    <PostCard key={post.id} post={post}/>
+                <div className={styles.post} key={post.id}>
+                    <PostCard post={post}/>
                 </div>
             ))}
         </div>

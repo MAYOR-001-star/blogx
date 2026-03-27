@@ -1,9 +1,13 @@
 import styles from "./postUser.module.css";
 import Image from "next/image";
 import {getUser} from "@/app/lib/data";
+import {Types} from "mongoose";
 
-const PostUser = async ({userId}: { userId: number }) => {
+const PostUser = async ({userId}: { userId: string | Types.ObjectId }) => {
     const user = await getUser(userId);
+    if (!user) {
+        return null
+    }
     return (
         <div className={styles.container}>
             <Image

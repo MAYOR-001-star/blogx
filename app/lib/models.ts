@@ -43,7 +43,8 @@ const postSchema = new Schema({
         type: String,
     },
     userId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true,
     },
     slug: {
@@ -54,5 +55,5 @@ const postSchema = new Schema({
 }, {timestamps: true});
 
 
-export const User = mongoose.models.User || mongoose.model('User', userSchema);
-export const Post = mongoose.models.Post || mongoose.model('Post', postSchema);
+export const User = mongoose.models?.User || mongoose.model('User', userSchema);
+export const Post = mongoose.models?.Post || mongoose.model('Post', postSchema);

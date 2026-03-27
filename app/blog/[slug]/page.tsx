@@ -1,60 +1,72 @@
 import Image from "next/image";
 import styles from "./singlePost.module.css";
+import PostUser from "@/components/postUser/postUser";
+import {Suspense} from "react";
 import {getPost} from "@/app/lib/data";
 
-type paramsProps = {
-    params: {
-        slug: number
-    }
-}
+// const getData = async (slug: string) => {
+//     const res = await fetch(`http://localhost:3000/api/blog/${slug}`);
 
-const SinglePostPage = async ({params}: paramsProps) => {
-    const {slug} = params
-    const post = await getPost(slug)
+//     if (!res.ok) {
+//         throw new Error("Something went wrong");
+//     }
+
+//     return res.json();
+// };
+
+export const generateMetadata = async ({params,}: {
+    params: Promise<{ slug: string }>;
+}) => {
+    const {slug} = await params;
+    const post = await getPost(slug);
+
+    if (!post) {
+        return {
+            title: "Post Not Found",
+        };
+    }
+
+    return {
+        title: post.title,
+        description: post.desc,
+    };
+};
+
+const SinglePostPage = async ({
+                                  params,
+                              }: {
+    params: Promise<{ slug: string }>;
+}) => {
+    const {slug} = await params;
+    const post = await getPost(slug);
+
     return (
         <div className={styles.container}>
-            {/* Image Section */}
-            <div className={styles.imgContainer}>
-                <Image
-                    src="https://images.pexels.com/photos/19457037/pexels-photo-19457037/free-photo-of-the-view-from-the-top-of-a-building-in-paris.jpeg"
-                    alt=""
-                    fill
-                    className={styles.img}
-                />
-            </div>
+            {post?.img && (
+                <div className={styles.imgContainer}>
+                    <Image src={post.img} alt="" fill className={styles.img}/>
+                </div>
+            )}
 
-            {/* Text Section */}
             <div className={styles.textContainer}>
-                <h1 className={styles.title}>Title</h1>
+                <h1 className={styles.title}>{post?.title}</h1>
 
                 <div className={styles.detail}>
-                    <Image
-                        className={styles.avatar}
-                        src="https://images.pexels.com/photos/19457037/pexels-photo-19457037/free-photo-of-the-view-from-the-top-of-a-building-in-paris.jpeg"
-                        alt=""
-                        width={50}
-                        height={50}
-                    />
+                    {post && (
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <PostUser userId={post.userId}/>
+                        </Suspense>
+                    )}
 
                     <div className={styles.detailText}>
-                        <div className={styles.detailItem}>
-                            <span className={styles.detailTitle}>Author: </span>
-                            <span className={styles.detailValue}>Terry Jefferson</span>
-                        </div>
-
-                        <div className={styles.detailItem}>
-                            <span className={styles.detailTitle}>Published: </span>
-                            <span className={styles.detailValue}>01.01.2024</span>
-                        </div>
+                        <span className={styles.detailTitle}>Published</span>
+                        <span className={styles.detailValue}>
+              {new Date(post?.createdAt).toDateString()}
+            </span>
                     </div>
                 </div>
 
-                <div className={styles.content}>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    Iure velit quisquam natus blanditiis? Autem, dolore consectetur
-                    sunt quod temporibus voluptates deserunt rerum atque.
-                    Necessitatibus, repellendus!
-                </div>
+                <div className={styles.content}>{post?.desc}</div>
             </div>
         </div>
     );
